@@ -19,6 +19,6 @@
 	"dependencies": {
 		"async": "2.5.0",
 		"node-array": "0.0.7",
-		"sort-values": "1.0.1",
+		"sort-values": "1.0.1"
 	}
 }
