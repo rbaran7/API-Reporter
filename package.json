@@ -1,0 +1,24 @@
+{
+	"name": "API-Reporter",
+	"version": "1.0.0",
+	"description": "An app written in Node.js that will report on API data",
+	"main": "app.js",
+	"scripts": {
+		
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/rbaran7/API-Reporter.git"
+	},
+	"author": "Roman Baran",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/rbaran7/api_report/issues"
+	},
+	"homepage": "https://github.com/rbaran7/api_report#readme",
+	"dependencies": {
+		"async": "2.5.0",
+		"node-array": "0.0.7",
+		"sort-values": "1.0.1",
+	}
+}
