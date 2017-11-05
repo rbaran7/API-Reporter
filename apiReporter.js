@@ -23,56 +23,21 @@ const getTimePeriod = function () {
 	console.log('\nThe Time Period Cover by the Log is:\n' + startTime + '  to  ' + endTime + '\n');
 }
 
-const getTenants = function () {
-//regex the content to grab all values of tenants-##. Kick off async loop to find elements while making key value pairs, return when done.
-	let tenantArr, sorted = null,
+const getValuesFromLog = function(label,regexString){
+//regex the content to grab all values of tenants-##/user agent/status code. Kick off async loop to find elements while making key value pairs, return when done.
+	let valueArr, sorted = null,
 		counts = {};
-
-	tenantArr = content.match(/(?:tenant?.\d+)+/g);
-
-	tenantArr.forEachAsync(function (element) {
-			counts[element] = (counts[element] || 0) + 1; //returns value of counts[element] if set or 0. Add one and repeat.
-		},
-		function showMeData() {
-			sorted = sortValues(counts, 'desc'); //sort by highest number of calls
-			console.log('______________________' + '\nCount of Calls Preformed by Each Tenant (Highest - Lowest):\n');
-			console.log(sorted);
-		});
-}
-
-const getUserAgents = function () {
-	//regex to grab the user agent values. Kick off async loop and check the frequency of each. Return the sorted object.
-	let userAgentsArr, sortedAgents = null,
-		agentCount = {};
-
-	userAgentsArr = content.match(/[?=\S]*\.\w+(?= [- ])|\bjava-sparkpost.*\b./g);
-
-	userAgentsArr.forEachAsync(function (element) {
-			agentCount[element] = (agentCount[element] || 0) + 1;
-		},
-		function userAgents() {
-			sortedAgents = sortValues(agentCount, 'desc');
-			console.log('______________________' + '\nUser Agents Ranked by Call Volume (Highest - Lowest):\n');
-			console.log(sortedAgents);
-		});
-}
-
-const getHttpStatusCodes = function () {
-	//regex to grab the status code values. Kick off async loop and check the frequency of each. Return the sorted object.
-	let statusCodeArr, freq = null,
-		codes = {};
-
-	statusCodeArr = content.match(/\s\d{3}\s(?=")+/g);
-
-	statusCodeArr.forEachAsync(function (element) {
-			codes[element] = (codes[element] || 0) + 1;
-		},
-		function getFreqofCodes() {
-			freq = sortValues(codes, 'desc');
-			console.log('______________________' + '\nHTTP Status Codes by Frequency (Highest - Lowest):\n');
-			console.log(freq);
-		});
-}
+	
+	valueArr = content.match(regexString);
+	
+	valueArr.forEachAsync(function(element){
+		counts[element] = (counts[element] || 0) + 1; //returns value of counts[element] if set or 0. Add one and repeat.
+	},
+	function showMeTheData(){
+		sorted = sortValues(counts, 'desc'); //sort highest to lowest
+		console.log(label, sorted);
+	});
+};
 
 //Organize those async calls!
 asyn.series([
@@ -81,15 +46,15 @@ asyn.series([
 		callback();
 	},
 	function (callback) {
-		getTenants();
-		callback();
+		getValuesFromLog('______________________' + '\nCount of Calls Preformed by Each Tenant (Highest - Lowest):\n', /(?:tenant?.\d+)+/g);
+		callback();	
 	},
 	function (callback) {
-		getUserAgents();
-		callback();
+		getValuesFromLog('______________________' + '\nUser Agents Ranked by Call Volume (Highest - Lowest):\n', /[?=\S]*\.\w+(?= [- ])|\bjava-sparkpost.*\b./g);
+		callback();		
 	},
 	function (callback) {
-		getHttpStatusCodes();
+		getValuesFromLog('______________________' + '\nHTTP Status Codes by Frequency (Highest - Lowest):\n', /\s\d{3}\s(?=")+/g);
 		callback();
 	},
 ], function (err, result) {
